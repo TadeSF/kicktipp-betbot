@@ -104,12 +104,12 @@ def parse_match_rows(browser: RoboBrowser, community, matchday = None):
     matchtuple = list()
     lastmatch = None
     for row in rows:
-        heimtipp = row[3].find(
+        heimtipp = row[4].find(
             'input', id=lambda x: x and x.endswith('_heimTipp'))
-        gasttipp = row[3].find(
+        gasttipp = row[4].find(
             'input', id=lambda x: x and x.endswith('_gastTipp'))
         try:
-            odds=[odd.replace(" ","") for odd in row[4].get_text().split("/")]
+            odds=[odd.replace(" ","").replace("Quote:", "") for odd in row[5].get_text().split("/")]
             match = Match(row[1].get_text(), row[2].get_text(), row[0].get_text(
             ), odds[0], odds[1], odds[2])
         except:
@@ -147,9 +147,12 @@ def get_communities(browser: RoboBrowser, desired_communities: list):
     """
     Get a list of all communities of the user
     """
+    return ["berlkie"]
+
     browser.open(URL_BASE + '/info/profil/meinetipprunden')
     content = get_kicktipp_content(browser)
     links = content.find_all('a')
+    print(f"DEBUG links: {links}")
     def gethreftext(link): return link.get('href').replace("/", "")
 
     def is_community(link):
